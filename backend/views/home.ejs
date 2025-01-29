@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Soma</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        header {
+            background-color: #4a90e2;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+        .post-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .post {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            border-bottom: 1px solid #ddd;
+        }
+        .post:last-child {
+            border-bottom: none;
+        }
+        h2 {
+            color: #333;
+        }
+        p {
+            color: #555;
+        }
+        .genre {
+            font-style: italic;
+            color: #888;
+        }
+        .author {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+    </style>
+</head>
+<body>
+    <header>
+        <h1><%= message %></h1>
+        <button type="button" onclick="window.location.href='/add'">Add Post</button>
+    </header>
+    <div class="post-container">
+        <% if (posts.length === 0) { %>
+            <p>No posts available yet.</p>
+        <% } else { %>
+            <% posts.forEach(post => { %>
+                <div class="post">
+                    <h2><%= post.title %></h2>
+                    <p class="genre">Genre: <%= post.genre %></p>
+                    <p class="author">Author: <%= post.author ? post.author.name : "Unknown" %></p>
+                    <p><%= post.content %></p>
+                    
+                </div>
+            <% }); %>
+        <% } %>
+    </div>
+</body>
+</html>

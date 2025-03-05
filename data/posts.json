@@ -1,32 +1,12 @@
 [
   {
-    "id": "9ab667c8-6eca-4aac-a8f2-ac8aa971335c",
-    "authorId": "423b094e-c8d6-4148-b5a2-2e5e435fb493",
-    "title": "sadasd",
-    "content": "sfasdas",
+    "id": "93c1b815-4c17-4afc-840a-8601b61e2390",
+    "authorId": "671cfdaf-c961-445f-a217-1452afaeae58",
+    "title": "asdasd",
+    "content": "asdasd",
     "genre": "Fiction",
     "author": "admin",
     "comments": [],
-    "upvotes": 0,
-    "downvotes": 0
-  },
-  {
-    "id": "fcad2dfc-803d-4245-9491-db0ddd54c48e",
-    "authorId": "423b094e-c8d6-4148-b5a2-2e5e435fb493",
-    "title": "asdfas",
-    "content": "dsfasdf",
-    "genre": "Fiction",
-    "author": "admin",
-    "comments": [
-      {
-        "id": "e76a9c63-f2fa-4b13-97a9-02456d6ac736",
-        "post": "fcad2dfc-803d-4245-9491-db0ddd54c48e",
-        "author": "admin",
-        "content": "asdasd",
-        "upvotes": 0,
-        "downvotes": 0
-      }
-    ],
     "upvotes": 0,
     "downvotes": 0
   }

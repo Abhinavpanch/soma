@@ -4,8 +4,9 @@ const { v4: uuidv4 } = require('uuid');
 const commentsFile = 'comments.json';
 
 class Comment {
-    constructor(post, author, content) {
+    constructor(post, author, content, authorId) {
         this.id = uuidv4();
+        this.authorId = authorId;
         this.post = post;
         this.author = author;
         this.content = content;
@@ -22,12 +23,23 @@ class Comment {
         return comments.filter(comment => comment.post === postId);
     }
 
-    static create({ post, author, content }) {
+    static findByCommentId(commentId) {
         const comments = readJSON(commentsFile);
-        const newComment = new Comment(post, author, content);
+        return comments.find(comment => comment.id === commentId);
+    }
+
+    static create({ post, author, content, authorId }) {
+        const comments = readJSON(commentsFile);
+        const newComment = new Comment(post, author, content, authorId);
         comments.push(newComment);
         writeJSON(commentsFile, comments);
         return newComment;
+    }
+
+    static findByIdAndDelete(id) {
+        let comments = readJSON(commentsFile);
+        comments = comments.filter(comment => comment.id !== id);
+        writeJSON(commentsFile, comments);
     }
 }
 

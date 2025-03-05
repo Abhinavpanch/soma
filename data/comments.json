@@ -1,0 +1,42 @@
+[
+  {
+    "id": "ed531a0f-c1a7-45cb-91d7-0fecb9d28f4b",
+    "post": "c9c3e9de-21c1-464f-bc20-13c1b2185f1c",
+    "author": "423b094e-c8d6-4148-b5a2-2e5e435fb493",
+    "content": "added comment",
+    "upvotes": 0,
+    "downvotes": 0
+  },
+  {
+    "id": "e324a5e0-11e9-4278-8c6f-10fbd1432c11",
+    "post": "b1f8a7f4-a3f0-4697-a913-f76ffaa3d0ec",
+    "author": "423b094e-c8d6-4148-b5a2-2e5e435fb493",
+    "content": "yes",
+    "upvotes": 0,
+    "downvotes": 0
+  },
+  {
+    "id": "59e97565-fe93-4f97-9380-ab7f51797e48",
+    "post": "b1f8a7f4-a3f0-4697-a913-f76ffaa3d0ec",
+    "author": "admin",
+    "content": "now yes",
+    "upvotes": 0,
+    "downvotes": 0
+  },
+  {
+    "id": "d0699e9d-e8c0-4eac-8836-3402d7140a13",
+    "post": "9ba26793-8459-4eba-ac95-1b8366477e9e",
+    "author": "admin",
+    "content": "yes working",
+    "upvotes": 0,
+    "downvotes": 0
+  },
+  {
+    "id": "e76a9c63-f2fa-4b13-97a9-02456d6ac736",
+    "post": "fcad2dfc-803d-4245-9491-db0ddd54c48e",
+    "author": "admin",
+    "content": "asdasd",
+    "upvotes": 0,
+    "downvotes": 0
+  }
+]

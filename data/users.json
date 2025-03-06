@@ -4,5 +4,17 @@
     "fullName": "admin",
     "email": "admin@gmail.com",
     "password": "$2a$10$OE8SimQrnZUI//511.zrLOlc2/pCTTAnSs0AmcJ2W7aOtkAyUCDlK"
+  },
+  {
+    "id": "9173c696-32fc-43fc-bfcd-4b443851b965",
+    "fullName": "Abhinav Singh",
+    "email": "Abhi@gmail.com",
+    "password": "$2a$10$dRIjvqhZeyfPPmQjeIcZ2uGo/8dlRJwAiCzjXBxE0qkMF/yGX8mFG"
+  },
+  {
+    "id": "99b78605-1f8d-46dd-b58d-890970f4c11e",
+    "fullName": "Annanya ",
+    "email": "Ann@gmail.com",
+    "password": "$2a$10$MZFqNek6sxHSmHRZGiDgAOKEmgr9yYJiR30h1D2pzoXIOt26fzXE."
   }
 ]

@@ -5,11 +5,12 @@ const bcrypt = require('bcryptjs');
 const usersFile = 'users.json';
 
 class User {
-    constructor(fullName, email, password) {
+    constructor(fullName, email, password, picture) {
         this.id = uuidv4();
         this.fullName = fullName;
         this.email = email;
         this.password = password;
+        this.picture = null;
     }
 
     static findAll() {
@@ -33,6 +34,17 @@ class User {
         users.push(newUser);
         writeJSON(usersFile, users);
         return newUser;
+    }
+
+    static async update(query, update) {
+        const users = await readJSON(usersFile);
+        const user = users.find(user => user.id === query.id);
+        if (user) {
+            if (update.$set && update.$set.picture) {
+                user.picture = update.$set.picture;
+            }
+            writeJSON(usersFile, users);
+        }
     }
 }
 

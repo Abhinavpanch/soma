@@ -1,12 +1,5 @@
 const Post=require("../models/postFunctions.model")
 
-
-
-
-
-
-
-
 async function searchPost(req, res) {
     try {
         const { query } = req.body;

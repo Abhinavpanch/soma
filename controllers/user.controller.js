@@ -52,10 +52,40 @@ async function showUserPost(req, res) {
             return res.status(401).json({ message: "Unauthorized: User not logged in" });
         }
 
-        const posts = Post.findAll().filter(post => post.author === req.user.id);
+        const posts = Post.findAll().filter(post => post.authorId === req.user.id);
         res.render("myPosts", { posts, user: req.user });
     } catch (error) {
         console.error("Error fetching posts:", error);
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
+}
+
+async function showProfile(req, res) {
+    try {
+        if (!req.user || !req.user.id) {
+            console.error("User not authenticated");
+            return res.status(401).json({ message: "Unauthorized: User not logged in" });
+        }
+
+        const user = User.findById(req.user.id);
+        res.render("profile", { user });
+    } catch (error) {
+        console.error("Error fetching user:", error);
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
+}
+
+async function editProfile(req, res) {
+    try {
+        if (!req.user || !req.user.id) {
+            console.error("User not authenticated");
+            return res.status(401).json({ message: "Unauthorized: User not logged in" });
+        }
+
+        const user = User.findById(req.user.id);
+        res.render("editProfile", { user });
+    } catch (error) {
+        console.error("Error fetching user:", error);
         return res.status(500).json({ message: "Internal Server Error" });
     }
 }
@@ -67,5 +97,7 @@ module.exports = {
     handleUserLogout,
     createUser,
     verifyUser,
-    showUserPost
+    showUserPost,
+    showProfile,
+    editProfile,
 };

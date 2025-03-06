@@ -14,6 +14,16 @@ async function handleHomePage(req, res) {
     }
 }
 
+// async function getMyPost(req, res) {
+//     try {
+//         const posts = Post.findByAuthorId(req.user.id);
+//         return res.render("home", { posts, message: "Welcome to Soma", user: req.user });
+//     } catch (error) {
+//         console.error("Error fetching posts:", error);
+//         return res.status(500).json({ message: "Internal Server Error" });
+//     }
+// }
+
 async function getPostPage(req, res) {
     return res.render("addPost");
 }
@@ -155,4 +165,5 @@ module.exports = {
     handleHomePage,
     addComment,
     deleteComment,
+    // getMyPost,
 };

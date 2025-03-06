@@ -20,6 +20,11 @@ class Post {
         return readJSON(postsFile);
     }
 
+    static findByAuthorId(id) {
+        const posts = readJSON(postsFile);
+        return posts.filter(post => post.authorId === id);
+    }
+
     static findById(id) {
         const posts = readJSON(postsFile);
         return posts.find(post => post.id === id);

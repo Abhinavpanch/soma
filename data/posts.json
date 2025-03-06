@@ -1,62 +1,11 @@
 [
   {
-    "id": "9ab667c8-6eca-4aac-a8f2-ac8aa971335c",
-    "authorId": "423b094e-c8d6-4148-b5a2-2e5e435fb493",
-    "title": "sadasd",
-    "content": "sfasdas",
+    "id": "93c1b815-4c17-4afc-840a-8601b61e2390",
+    "authorId": "671cfdaf-c961-445f-a217-1452afaeae58",
+    "title": "asdasd",
+    "content": "asdasd",
     "genre": "Fiction",
     "author": "admin",
-    "comments": [],
-    "upvotes": 0,
-    "downvotes": 0
-  },
-  {
-    "id": "fcad2dfc-803d-4245-9491-db0ddd54c48e",
-    "authorId": "423b094e-c8d6-4148-b5a2-2e5e435fb493",
-    "title": "asdfas",
-    "content": "dsfasdf",
-    "genre": "Fiction",
-    "author": "admin",
-    "comments": [
-      {
-        "id": "e76a9c63-f2fa-4b13-97a9-02456d6ac736",
-        "post": "fcad2dfc-803d-4245-9491-db0ddd54c48e",
-        "author": "admin",
-        "content": "asdasd",
-        "upvotes": 0,
-        "downvotes": 0
-      }
-    ],
-    "upvotes": 0,
-    "downvotes": 0
-  },
-  {
-    "id": "c534c95d-9755-435d-9d60-554872206abf",
-    "authorId": "9173c696-32fc-43fc-bfcd-4b443851b965",
-    "title": "The Greatness Of ME",
-    "content": "I Am The Greatest Of All Time",
-    "genre": "Non-Fiction",
-    "author": "Abhinav Singh",
-    "comments": [
-      {
-        "id": "0647308f-5c5e-410f-ae0f-52002882c18c",
-        "post": "c534c95d-9755-435d-9d60-554872206abf",
-        "author": "Abhinav Singh",
-        "content": "Yeah you are",
-        "upvotes": 0,
-        "downvotes": 0
-      }
-    ],
-    "upvotes": 0,
-    "downvotes": 0
-  },
-  {
-    "id": "433d6bed-e00b-4bb8-bbe3-1146e486833a",
-    "authorId": "99b78605-1f8d-46dd-b58d-890970f4c11e",
-    "title": "My new post",
-    "content": "Text content",
-    "genre": "Non-Fiction",
-    "author": "Annanya ",
     "comments": [],
     "upvotes": 0,
     "downvotes": 0

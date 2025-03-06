@@ -70,7 +70,7 @@ async function deletePost(req, res) {
             return res.status(404).json({ message: "Post not found" });
         }
 
-        if (post.author !== userId) {
+        if (post.authorId !== userId) {
             return res.status(403).json({ message: "Unauthorized to delete this post" });
         }
 
@@ -99,6 +99,7 @@ async function addComment(req, res) {
             content,
             post: postId,
             author: req.user.fullName,
+            authorId: req.user.id,
         });
 
         Post.addComment(postId, newComment);
@@ -109,6 +110,43 @@ async function addComment(req, res) {
     }
 }
 
+async function deleteComment(req, res) {
+    const {postId, commentId} = req.params;
+
+    try {
+        // Find the post by its ID
+        const post = await Post.findById(postId);
+        if (!post) {
+            return res.status(404).json({ message: "Post not found" });
+        }
+
+        // Find the comment by its ID
+        const comment = await Comment.findByCommentId(commentId);
+        if (!comment) {
+            return res.status(404).json({ message: "Comment not found" });
+        }
+
+        // Check if the user is the author of the comment
+        if (comment.authorId !== req.user.id) {
+            console.log(comment.authorId);
+            console.log(req.user.id);
+            return res.status(403).json({ message: "Unauthorized to delete this comment" });
+        }
+
+        // Delete the comment from the Post document (from the comments array)
+        post.comments = post.comments.filter(comment => comment.id !== commentId);
+        await Post.update({ id: postId }, { $pull: { comments: { id: commentId } } });
+
+        // Delete the comment from the Comment data
+        Comment.findByIdAndDelete(commentId);
+        // Return a success message
+        return res.status(200).json({ message: "Comment deleted successfully" });
+    } catch (error) {
+        console.error("Error deleting comment:", error);
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
+}
+
 module.exports = {
     getPostPage,
     addPost,
@@ -116,4 +154,5 @@ module.exports = {
     deletePost,
     handleHomePage,
     addComment,
+    deleteComment,
 };

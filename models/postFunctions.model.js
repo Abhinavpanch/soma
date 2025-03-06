@@ -47,6 +47,17 @@ class Post {
             writeJSON(postsFile, posts);
         }
     }
+
+    static async update(query, update) {
+        const posts = await readJSON(postsFile);
+        const post = posts.find(post => post.id === query.id);
+        if (post) {
+            if (update.$pull && update.$pull.comments) {
+                post.comments = post.comments.filter(comment => comment.id !== update.$pull.comments.id);
+            }
+            await writeJSON(postsFile, posts);
+        }
+    }
 }
 
 module.exports = Post;

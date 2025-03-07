@@ -56,10 +56,12 @@
       class="collapse navbar-collapse justify-content-between"
       id="navbarSupportedContent"
     >
-      <form class="d-flex" role="search">
+      <form action="/posts/search" class="d-flex" role="search" method="post">
         <input
           class="form-control me-2"
           type="search"
+          id="searchInput"
+          name="searchInput"
           placeholder="Search"
           aria-label="Search"
         />

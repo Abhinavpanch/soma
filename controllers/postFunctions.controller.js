@@ -56,6 +56,7 @@ async function showPost(req, res) {
         const postId = req.params.id;
 
         const post = Post.findById(postId);
+        Post.incrementViews(postId);
 
         if (!post) {
             return res.status(404).json({ message: "Post not found" });
@@ -179,6 +180,59 @@ async function searchPost(req, res) {
     }
 }
 
+async function upvotePost(req, res) {
+    try {
+        const postId = req.params.id;
+        const userId = req.user.id;
+
+        const post = await Post.findById(postId);
+
+        if (!post) {
+            return res.status(404).json({ message: "Post not found" });
+        }
+
+        const hasUpvoted = post.upvotes.includes(userId);
+
+        if (hasUpvoted) {
+            post.upvotes = post.upvotes.filter(id => id !== userId);
+            await Post.update({ id: postId }, { $pull: { upvotes: userId } });
+        } else {
+            post.upvotes.push(userId);
+            await Post.update({ id: postId }, { $push: { upvotes: userId } });
+        }
+        
+        res.redirect(`/posts/${postId}`);
+    } catch (error) {
+        console.error("Error upvoting post:", error);
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
+}
+
+async function downvotePost(req, res) {
+    try {
+        const postId = req.params.id;
+        const post = Post.findById(postId);
+
+        if (!post) {
+            return res.status(404).json({ message: "Post not found" });
+        }
+
+        const hasDownvoted = post.downvotes.includes(req.user.id);
+        if (hasDownvoted) {
+            post.downvotes = post.downvotes.filter(id => id !== req.user.id);
+            await Post.update({ id: postId }, { $pull: { downvotes: req.user.id } });
+        } else {
+            post.downvotes.push(req.user.id);
+            await Post.update({ id: postId }, { $push: { downvotes: req.user.id } });
+        }
+
+        res.redirect(`/posts/${postId}`);
+    } catch (error) {
+        console.error("Error downvoting post:", error);
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
+}
+
 
 module.exports = {
     getPostPage,
@@ -189,5 +243,7 @@ module.exports = {
     addComment,
     deleteComment,
     searchPost,
+    upvotePost,
+    downvotePost,
     // getMyPost,
 };

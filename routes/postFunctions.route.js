@@ -1,5 +1,5 @@
 const express=require("express");
-const { getPostPage,addPost, showPost, deletePost, addComment, deleteComment, searchPost} = require("../controllers/postFunctions.controller");
+const { getPostPage,addPost, showPost, deletePost, addComment, deleteComment, searchPost, upvotePost, downvotePost} = require("../controllers/postFunctions.controller");
 const {authenticateJWT}=require("../services/auth")
 const Comment=require("../models/comment.model")
 const Post=require("../models/postFunctions.model")
@@ -14,6 +14,8 @@ router.post("/:id/comment",authenticateJWT,addComment);
 router.get("/:id/comment",authenticateJWT,showPost)
 router.delete("/:postId/comment/:commentId", authenticateJWT, deleteComment)
 router.post("/search", searchPost);
+router.post("/:id/upvote", authenticateJWT, upvotePost);
+router.post("/:id/downvote", authenticateJWT, downvotePost);
 
 
 module.exports=router;

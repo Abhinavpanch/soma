@@ -12,8 +12,36 @@ class Post {
         this.genre = genre;
         this.author = author;
         this.comments = [];
-        this.upvotes = 0;
-        this.downvotes = 0;
+        this.upvotes = [];
+        this.downvotes = [];
+        this.views = 0;
+    }
+
+    static upvote(id) {
+        const posts = readJSON(postsFile);
+        const post = posts.find(post => post.id === id);
+        if (post) {
+            post.upvotes++;
+            writeJSON(postsFile, posts);
+        }
+    }
+
+    static downvote(id) {
+        const posts = readJSON(postsFile);
+        const post = posts.find(post => post.id === id);
+        if (post) {
+            post.downvotes++;
+            writeJSON(postsFile, posts);
+        }
+    }
+
+    static incrementViews(id) {
+        const posts = readJSON(postsFile);
+        const post = posts.find(post => post.id === id);
+        if (post) {
+            post.views++;
+            writeJSON(postsFile, posts);
+        }
     }
 
     static findAll() {
@@ -59,6 +87,18 @@ class Post {
         if (post) {
             if (update.$pull && update.$pull.comments) {
                 post.comments = post.comments.filter(comment => comment.id !== update.$pull.comments.id);
+            }
+            if (update.$pull && update.$pull.upvotes) {
+                post.upvotes = post.upvotes.filter(id => id !== update.$pull.upvotes);
+            }
+            if (update.$push && update.$push.upvotes) {
+                post.upvotes.push(update.$push.upvotes);
+            }
+            if (update.$pull && update.$pull.downvotes) {
+                post.downvotes = post.downvotes.filter(id => id !== update.$pull.downvotes);
+            }
+            if (update.$push && update.$push.downvotes) {
+                post.downvotes.push(update.$push.downvotes);
             }
             await writeJSON(postsFile, posts);
         }

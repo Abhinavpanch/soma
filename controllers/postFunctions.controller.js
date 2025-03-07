@@ -4,7 +4,7 @@ const Comment = require("../models/comment.model");
 
 async function handleHomePage(req, res) {
     try {
-        const posts = Post.findAll();
+        const posts = Post.findAll().reverse();
         const user = req.user || null;
 
         return res.render("home", { posts, message: "Welcome to Soma", user });
@@ -160,7 +160,6 @@ async function deleteComment(req, res) {
 async function searchPost(req, res) {
     try {
         let searchInput = req.body.searchInput;
-        console.log(searchInput)
         if (!searchInput) return res.status(400).json({ message: "searchInput is required" });
 
         const results = await Post.find({

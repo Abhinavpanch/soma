@@ -6,25 +6,28 @@
     <title>Search</title>
 </head>
 <body>
-    <div class="author">
-        <h1 class="author__heading">
-            Search Results
-        </h1>
-    </div>
-    
-    <section class="articles">
-        <ul class="article-ul">
-            <% data.forEach(post => { %>
-            <li>
-              <a href="/post/<%= post._id %>">
-                <span><%= post.title %></span>
-                <span class="article-list__date"
-                  ><%= post.createdAt.toDateString() %></span
-                >
-              </a>
-            </li>
-            <% }) %>
-          </ul>
-    </section>
+  <%- include('partials/head') %> <%- include('partials/navbar') %> <%-
+  include('partials/sidebar') %>
+
+  <div class="post-container d-block container col-7 mt-5">
+    <% if (results.length === 0) { %>
+    <p>No posts available yet.</p>
+      <% } else { %> <% results.forEach(post => { %>
+      <div class="post mb-4 p-3 border-bottom heading-container">
+      <a href="/posts/<%= post.id %>" class="text-dark" style="text-decoration: none">
+        <div class=" border-bottom row mb-4 pt-4">
+        <h4><%= post.title %></h4>
+        <p class="genre fs-6 lead container col text-muted">
+          Genre: <%= post.genre %>
+        </p>
+        <p class="author fs-6 lead col small text-muted">
+          Author: <%= post.author ? post.author : "Unknown" %>
+        </p>
+        </div>
+        <p><%= post.content %></p>
+      </a>
+      </div>
+      <% }); %> <% } %>
+  </div>
 </body>
 </html>

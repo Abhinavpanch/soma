@@ -26,9 +26,13 @@ async function createUser(req, res) {
             return res.status(400).json({ message: "Email already exists" });
         }
 
+        // Hash the password before saving
         const hashedPassword = await bcrypt.hash(password, 10);
-        const user = new User({ fullName, email, password: hashedPassword });
-        await user.save();
+        await User.create({
+            fullName,
+            email,
+            password: hashedPassword,
+        });
 
         return res.redirect("/user/login");
     } catch (error) {
@@ -47,7 +51,7 @@ async function verifyUser(req, res) {
         }
 
         const token = jwt.sign(
-            { id: user._id, email: user.email, fullName: user.fullName },
+            { id: user._id, email: user.email, fullName: user.fullName, isAdmin: user.isAdmin },
             SECRET_KEY,
             { expiresIn: "1h" }
         );

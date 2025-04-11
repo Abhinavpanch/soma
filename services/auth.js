@@ -1,55 +1,37 @@
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
 
-
 const JWT_SECRET = process.env.SECRET_KEY || "chintu";
 
-
-
-
 const authenticateJWT = (req, res, next) => {
-    const token = req.cookies.token || req.headers.authorization?.split(" ")[1]; 
-
+    const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
 
     if (!token) {
-        req.user = null; 
+        console.log("No token provided");
+        req.user = null;
         return next();
     }
 
     jwt.verify(token, JWT_SECRET, (err, user) => {
         if (err) {
-            req.user = null;  
-        } else {
-            req.user = user;
+            console.error("JWT verification failed:", err.message);
+            req.user = null;
+            if (err.name === "TokenExpiredError") {
+                return res.status(401).json({ message: "Session expired. Please log in again." });
+            }
+            return res.status(403).json({ message: "Invalid token" });
         }
-        
+        req.user = user;
         next();
     });
-
 };
 
-module.exports = { authenticateJWT };
+const authenticateAdmin = (req, res, next) => {
+    if (!req.user || !req.user.isAdmin) {
+        console.log("Unauthorized access attempt by:", req.user ? req.user.email : "Unknown user");
+        return res.redirect("/user/login"); // Redirect unauthorized users
+    }
+    next();
+};
 
-
-
-
-
-
-
-
-// function authenticateJWT(req, res, next) {
-//     const token = req.cookies?.token || req.headers.authorization?.split(" ")[1];
-
-//     if (!token) {
-//         return res.redirect("/user/login")
-//     }
-
-//     jwt.verify(token, SECRET_KEY, (err, user) => {
-//         if (err) {
-//             return res.status(403).json({ message: "Forbidden: Invalid token" });
-//         }
-
-//         req.user = user; 
-//         next();
-//     });
-// }
+module.exports = { authenticateJWT, authenticateAdmin };

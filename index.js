@@ -5,6 +5,7 @@ const cookieParser = require("cookie-parser");
 const path = require("path"); // Ensure path is imported
 const userRoute = require("./routes/user.route");
 const postFunctionRoute = require("./routes/postFunctions.route");
+const adminRoute = require("./routes/admin.route");
 const { authenticateJWT } = require("./services/auth");
 const { handleHomePage } = require("./controllers/postFunctions.controller");
 
@@ -25,6 +26,7 @@ app.use(express.urlencoded({ extended: true }));
 app.get("/", authenticateJWT, handleHomePage);
 app.use("/posts", postFunctionRoute);
 app.use("/user", userRoute);
+app.use("/admin", adminRoute);
 
 // Start the server
 app.listen(port, () => {

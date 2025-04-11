@@ -20,28 +20,43 @@ function handleUserLogout(req, res) {
 
 async function createUser(req, res) {
     const { fullName, email, password } = req.body;
-    const existingUser = await User.findByEmail(email);
-    if (existingUser) {
-        return res.status(400).json({ message: "Email already exists" });
+    try {
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ message: "Email already exists" });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const user = new User({ fullName, email, password: hashedPassword });
+        await user.save();
+
+        return res.redirect("/user/login");
+    } catch (error) {
+        console.error("Error creating user:", error);
+        return res.status(500).json({ message: "Internal Server Error" });
     }
-    await User.create({ fullName, email, password });
-    return res.redirect("/user/login");
 }
 
 async function verifyUser(req, res) {
     const { email, password } = req.body;
     try {
-        const user = User.findByEmail(email);
+        const user = await User.findOne({ email });
 
         if (!user || !(await bcrypt.compare(password, user.password))) {
-            return res.status(401).json({ message: "invalid credentials" });
+            return res.status(401).json({ message: "Invalid credentials" });
         }
 
-        const token = jwt.sign({ id: user.id, email: user.email, fullName: user.fullName }, SECRET_KEY, { expiresIn: "1h" });
+        const token = jwt.sign(
+            { id: user._id, email: user.email, fullName: user.fullName },
+            SECRET_KEY,
+            { expiresIn: "1h" }
+        );
+
         res.cookie("token", token, { httpOnly: true, secure: process.env.NODE_ENV === "production" });
         return res.redirect("/");
-    } catch (err) {
-        console.log("Error during login: ", err);
+    } catch (error) {
+        console.error("Error during login:", error);
+        return res.status(500).json({ message: "Internal Server Error" });
     }
 }
 
@@ -56,7 +71,7 @@ async function showUserPost(req, res) {
             return res.status(401).json({ message: "Unauthorized: User not logged in" });
         }
 
-        const posts = Post.findAll().filter(post => post.authorId === req.user.id);
+        const posts = await Post.find({ authorId: req.user.id });
         res.render("myPosts", { posts, user: req.user });
     } catch (error) {
         console.error("Error fetching posts:", error);
@@ -65,14 +80,17 @@ async function showUserPost(req, res) {
 }
 
 async function showProfile(req, res) {
-    const { fullName, email, password } = req.body;
     try {
         if (!req.user || !req.user.id) {
             console.error("User not authenticated");
             return res.status(401).json({ message: "Unauthorized: User not logged in" });
         }
 
-        const user = User.findById(req.user.id);
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
         res.render("profile", { user });
     } catch (error) {
         console.error("Error fetching user:", error);
@@ -87,7 +105,11 @@ async function editProfile(req, res) {
             return res.status(401).json({ message: "Unauthorized: User not logged in" });
         }
 
-        const user = User.findById(req.user.id);
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
         res.render("editProfile", { user });
     } catch (error) {
         console.error("Error fetching user:", error);
@@ -97,7 +119,6 @@ async function editProfile(req, res) {
 
 async function updateProfile(req, res) {
     const { inputUsername, inputEmailAddress, profilePicture } = req.body;
-    // console.log("workingd")
     try {
         if (!req.user || !req.user.id) {
             console.error("User not authenticated");
@@ -113,7 +134,7 @@ async function updateProfile(req, res) {
         user.email = inputEmailAddress || user.email;
         user.picture = profilePicture || user.picture;
 
-        await User.update(user);
+        await user.save();
 
         res.redirect("/user/profile");
     } catch (error) {
@@ -121,7 +142,6 @@ async function updateProfile(req, res) {
         return res.status(500).json({ message: "Internal Server Error" });
     }
 }
-
 
 module.exports = {
     handleUserSignup,

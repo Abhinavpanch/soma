@@ -1,10 +1,10 @@
-const Post = require("../models/postFunctions.model");
+const Post = require('../models/postFunctions.model');
 const User = require("../models/user.model");
 const Comment = require("../models/comment.model");
 
 async function handleHomePage(req, res) {
     try {
-        const posts = Post.findAll().reverse();
+        const posts = await Post.find().sort({ createdAt: -1 }); // Fetch posts in reverse chronological order
         const user = req.user || null;
 
         return res.render("home", { posts, message: "Welcome to Soma", user });
@@ -14,15 +14,15 @@ async function handleHomePage(req, res) {
     }
 }
 
-// async function getMyPost(req, res) {
-//     try {
-//         const posts = Post.findByAuthorId(req.user.id);
-//         return res.render("home", { posts, message: "Welcome to Soma", user: req.user });
-//     } catch (error) {
-//         console.error("Error fetching posts:", error);
-//         return res.status(500).json({ message: "Internal Server Error" });
-//     }
-// }
+async function getMyPost(req, res) {
+    try {
+        const posts = await Post.find({ authorId: req.user.id }).sort({ createdAt: -1 });
+        return res.render("home", { posts, message: "Your Posts", user: req.user });
+    } catch (error) {
+        console.error("Error fetching posts:", error);
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
+}
 
 async function getPostPage(req, res) {
     return res.render("addPost");
@@ -30,13 +30,13 @@ async function getPostPage(req, res) {
 
 async function addPost(req, res) {
     if (!req.user) {
-        return res.status(401).json({ message: "Unauthorized: No user data" });
+        return res.status(401).json({ message: 'Unauthorized: No user data' });
     }
 
     try {
         const { title, content, genre } = req.body;
 
-        const post = Post.create({
+        const post = await Post.create({
             title,
             content,
             genre,
@@ -44,10 +44,10 @@ async function addPost(req, res) {
             authorId: req.user.id,
         });
 
-        return res.redirect("/");
+        return res.redirect('/');
     } catch (error) {
-        console.error("Error Creating Post:", error);
-        return res.status(500).send("Server error");
+        console.error('Error Creating Post:', error);
+        return res.status(500).send('Server error');
     }
 }
 
@@ -55,128 +55,126 @@ async function showPost(req, res) {
     try {
         const postId = req.params.id;
 
-        const post = Post.findById(postId);
-        Post.incrementViews(postId);
-
+        const post = await Post.findById(postId).populate('comments'); // Populate comments
         if (!post) {
             return res.status(404).json({ message: "Post not found" });
         }
 
-        const comments = Comment.findByPostId(postId);
+        await incrementViews(postId); // Increment views
 
-        res.render("showPost", { post, comments, user: req.user || null });
+        res.render("showPost", { post, comments: post.comments, user: req.user || null });
     } catch (error) {
         console.error("Error fetching post:", error.message);
         res.status(500).json({ message: "Internal Server Error", error: error.message });
     }
 }
 
+async function incrementViews(postId) {
+    try {
+        await Post.updateOne({ _id: postId }, { $inc: { views: 1 } });
+    } catch (error) {
+        console.error("Error incrementing views:", error);
+    }
+}
+
 async function deletePost(req, res) {
     try {
         const postId = req.params.id;
-        const userId = req.user.id;
 
-        const post = Post.findById(postId);
+        const post = await Post.findById(postId);
         if (!post) {
-            return res.status(404).json({ message: "Post not found" });
+            return res.status(404).json({ message: 'Post not found' });
         }
 
-        if (post.authorId !== userId) {
-            return res.status(403).json({ message: "Unauthorized to delete this post" });
+        if (post.authorId.toString() !== req.user.id) {
+            return res.status(403).json({ message: 'Unauthorized to delete this post' });
         }
 
-        Post.deleteById(postId);
-        return res.status(200).json({ message: "Post deleted successfully" });
-    } catch (err) {
-        console.error("Error deleting post:", err);
-        return res.status(500).json({ message: "Internal Server Error" });
+        await Post.deleteOne({ _id: postId });
+
+        return res.status(200).json({ message: 'Post deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting post:', error);
+        return res.status(500).json({ message: 'Internal Server Error' });
     }
 }
 
 async function addComment(req, res) {
     try {
-        if (!req.user) {
-            return res.status(401).json({ message: "Unauthorized. Please log in." });
-        }
-
+        const { postId } = req.params;
         const { content } = req.body;
-        const postId = req.params.id;
 
-        if (!content || content.trim() === "") {
-            return res.status(400).json({ message: "Comment cannot be empty" });
+        const post = await Post.findById(postId);
+        if (!post) {
+            return res.status(404).json({ message: 'Post not found' });
         }
 
-        const newComment = Comment.create({
-            content,
+        const comment = await Comment.create({
             post: postId,
             author: req.user.fullName,
+            content,
             authorId: req.user.id,
         });
 
-        Post.addComment(postId, newComment);
+        await Post.updateOne({ _id: postId }, { $push: { comments: comment._id } });
+
         res.redirect(`/posts/${postId}`);
     } catch (error) {
-        console.error("Error posting comment:", error);
-        res.status(500).json({ message: "Server error", error });
+        console.error('Error adding comment:', error);
+        return res.status(500).json({ message: 'Internal Server Error' });
     }
 }
 
 async function deleteComment(req, res) {
-    const {postId, commentId} = req.params;
-
     try {
-        // Find the post by its ID
+        const { postId, commentId } = req.params;
+
         const post = await Post.findById(postId);
         if (!post) {
-            return res.status(404).json({ message: "Post not found" });
+            return res.status(404).json({ message: 'Post not found' });
         }
 
-        // Find the comment by its ID
-        const comment = await Comment.findByCommentId(commentId);
+        const comment = await Comment.findById(commentId);
         if (!comment) {
-            return res.status(404).json({ message: "Comment not found" });
+            return res.status(404).json({ message: 'Comment not found' });
         }
 
-        // Check if the user is the author of the comment
-        if (comment.authorId !== req.user.id) {
-            console.log(comment.authorId);
-            console.log(req.user.id);
-            return res.status(403).json({ message: "Unauthorized to delete this comment" });
+        if (comment.authorId.toString() !== req.user.id) {
+            return res.status(403).json({ message: 'Unauthorized to delete this comment' });
         }
 
-        // Delete the comment from the Post document (from the comments array)
-        post.comments = post.comments.filter(comment => comment.id !== commentId);
-        await Post.update({ id: postId }, { $pull: { comments: { id: commentId } } });
+        await Comment.deleteOne({ _id: commentId });
+        await Post.updateOne({ _id: postId }, { $pull: { comments: commentId } });
 
-        // Delete the comment from the Comment data
-        Comment.findByIdAndDelete(commentId);
-        // Return a success message
-        return res.status(200).json({ message: "Comment deleted successfully" });
+        res.status(200).json({ message: 'Comment deleted successfully' });
     } catch (error) {
-        console.error("Error deleting comment:", error);
-        return res.status(500).json({ message: "Internal Server Error" });
+        console.error('Error deleting comment:', error);
+        return res.status(500).json({ message: 'Internal Server Error' });
     }
 }
 
 async function searchPost(req, res) {
     try {
-        let searchInput = req.body.searchInput;
-        if (!searchInput) return res.status(400).json({ message: "searchInput is required" });
+        const searchInput = req.body.searchInput;
+        if (!searchInput) {
+            return res.status(400).json({ message: 'searchInput is required' });
+        }
 
         const results = await Post.find({
             $or: [
-                { title: { $regex: searchInput, $options: "i" } },
-                { content: { $regex: searchInput, $options: "i" } }
-            ]
+                { title: { $regex: searchInput, $options: 'i' } },
+                { content: { $regex: searchInput, $options: 'i' } },
+            ],
         });
 
-        res.render("search", {
+        res.render('search', {
             results,
             searchInput,
-            user: req.user || null
-        })
-    } catch (err) {
-        res.status(500).json({ message: "Server error", error: err.message });
+            user: req.user || null,
+        });
+    } catch (error) {
+        console.error('Error searching posts:', error);
+        return res.status(500).json({ message: 'Internal Server Error' });
     }
 }
 
@@ -186,64 +184,60 @@ async function upvotePost(req, res) {
         const userId = req.user.id;
 
         const post = await Post.findById(postId);
-
         if (!post) {
-            return res.status(404).json({ message: "Post not found" });
+            return res.status(404).json({ message: 'Post not found' });
         }
 
         const hasUpvoted = post.upvotes.includes(userId);
 
         if (hasUpvoted) {
-            post.upvotes = post.upvotes.filter(id => id !== userId);
-            await Post.update({ id: postId }, { $pull: { upvotes: userId } });
+            await Post.updateOne({ _id: postId }, { $pull: { upvotes: userId } });
         } else {
-            post.upvotes.push(userId);
-            await Post.update({ id: postId }, { $push: { upvotes: userId } });
+            await Post.updateOne({ _id: postId }, { $addToSet: { upvotes: userId } });
         }
-        
-        res.redirect(`/posts/${postId}`);
+
+        res.status(200).json({ message: 'Upvote status updated' });
     } catch (error) {
-        console.error("Error upvoting post:", error);
-        return res.status(500).json({ message: "Internal Server Error" });
+        console.error('Error upvoting post:', error);
+        return res.status(500).json({ message: 'Internal Server Error' });
     }
 }
 
 async function downvotePost(req, res) {
     try {
         const postId = req.params.id;
-        const post = Post.findById(postId);
+        const userId = req.user.id;
 
+        const post = await Post.findById(postId);
         if (!post) {
-            return res.status(404).json({ message: "Post not found" });
+            return res.status(404).json({ message: 'Post not found' });
         }
 
-        const hasDownvoted = post.downvotes.includes(req.user.id);
+        const hasDownvoted = post.downvotes.includes(userId);
+
         if (hasDownvoted) {
-            post.downvotes = post.downvotes.filter(id => id !== req.user.id);
-            await Post.update({ id: postId }, { $pull: { downvotes: req.user.id } });
+            await Post.updateOne({ _id: postId }, { $pull: { downvotes: userId } });
         } else {
-            post.downvotes.push(req.user.id);
-            await Post.update({ id: postId }, { $push: { downvotes: req.user.id } });
+            await Post.updateOne({ _id: postId }, { $addToSet: { downvotes: userId } });
         }
 
-        res.redirect(`/posts/${postId}`);
+        res.status(200).json({ message: 'Downvote status updated' });
     } catch (error) {
-        console.error("Error downvoting post:", error);
-        return res.status(500).json({ message: "Internal Server Error" });
+        console.error('Error downvoting post:', error);
+        return res.status(500).json({ message: 'Internal Server Error' });
     }
 }
 
-
 module.exports = {
+    handleHomePage,
+    getMyPost,
     getPostPage,
     addPost,
     showPost,
     deletePost,
-    handleHomePage,
     addComment,
     deleteComment,
     searchPost,
     upvotePost,
     downvotePost,
-    // getMyPost,
 };

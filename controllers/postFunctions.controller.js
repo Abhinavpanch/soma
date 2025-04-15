@@ -83,27 +83,25 @@ async function deletePost(req, res) {
 
         const post = await Post.findById(postId);
         if (!post) {
-            return res.status(404).json({ message: 'Post not found' });
+            return res.status(404).json({ message: "Post not found" });
         }
 
         if (post.authorId.toString() !== req.user.id) {
-            return res.status(403).json({ message: 'Unauthorized to delete this post' });
+            return res.status(403).json({ message: "Unauthorized to delete this post" });
         }
 
         await Post.deleteOne({ _id: postId });
-
-        return res.status(200).json({ message: 'Post deleted successfully' });
+        res.status(200).json({ message: "Post deleted successfully" });
     } catch (error) {
-        console.error('Error deleting post:', error);
-        return res.status(500).json({ message: 'Internal Server Error' });
+        console.error("Error deleting post:", error);
+        res.status(500).json({ message: "Internal Server Error" });
     }
 }
 
 async function addComment(req, res) {
     try {
-        const { postId } = req.params;
+        const postId = req.params.id;
         const { content } = req.body;
-
         const post = await Post.findById(postId);
         if (!post) {
             return res.status(404).json({ message: 'Post not found' });
@@ -227,6 +225,35 @@ async function downvotePost(req, res) {
         return res.status(500).json({ message: 'Internal Server Error' });
     }
 }
+
+// function deleteComment(commentId, postId, authorId) {
+//     console.log(
+//         `Attempting to delete comment: ${commentId} from post: ${postId} with author ID: ${authorId}`
+//     );
+
+//     if (!confirm("Are you sure you want to delete this comment?")) return;
+
+//     fetch(`/posts/${postId}/comment/${commentId}`, {
+//         method: "DELETE",
+//         headers: { "Content-Type": "application/json" },
+//         credentials: "include", // Ensures cookies are sent with the request
+//     })
+//         .then((response) => response.json()) // Parse JSON response
+//         .then((data) => {
+//             console.log("Server response:", data);
+
+//             if (data.message === "Comment deleted successfully") {
+//                 document.getElementById(`comment-${commentId}`).remove();
+//                 document.getElementById("comment-length").innerText = `Comments (${
+//                     document.getElementsByClassName("comment").length
+//                 })`;
+//                 console.log(`Comment ${commentId} deleted successfully`);
+//             } else {
+//                 alert(data.message || "Failed to delete comment.");
+//             }
+//         })
+//         .catch((error) => console.error("Error:", error));
+// }
 
 module.exports = {
     handleHomePage,

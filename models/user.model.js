@@ -77,7 +77,7 @@ const userSchema = new mongoose.Schema({
     password: { type: String, required: true },
     picture: { type: String, default: null },
     isAdmin: { type: Boolean, default: false }, // Admin flag
-});
+},{timestamps:true});
 
 // userSchema.pre('save', async function (next) {
 //     if (!this.isModified('password')) return next();

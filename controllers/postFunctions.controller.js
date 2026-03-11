@@ -194,7 +194,7 @@ async function upvotePost(req, res) {
             await Post.updateOne({ _id: postId }, { $addToSet: { upvotes: userId } });
         }
 
-        res.status(200).json({ message: 'Upvote status updated' });
+        res.status(200).redirect(`/posts/${postId}`);
     } catch (error) {
         console.error('Error upvoting post:', error);
         return res.status(500).json({ message: 'Internal Server Error' });
@@ -219,7 +219,7 @@ async function downvotePost(req, res) {
             await Post.updateOne({ _id: postId }, { $addToSet: { downvotes: userId } });
         }
 
-        res.status(200).json({ message: 'Downvote status updated' });
+        res.status(200).redirect(`/posts/${postId}`);
     } catch (error) {
         console.error('Error downvoting post:', error);
         return res.status(500).json({ message: 'Internal Server Error' });

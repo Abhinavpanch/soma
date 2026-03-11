@@ -1,0 +1,111 @@
+[
+  {
+    "id": "36303990-4d7c-422a-95b0-d8bd1f8608ba",
+    "authorId": "7d165c4a-decc-46c5-8714-3bc64611caaa",
+    "title": "trsda",
+    "content": "sfdasda",
+    "genre": "Fiction",
+    "author": "test",
+    "comments": [],
+    "upvotes": 0,
+    "downvotes": 0
+  },
+  {
+    "id": "b70e4718-c347-4505-bc33-482672e1d6d5",
+    "authorId": "671cfdaf-c961-445f-a217-1452afaeae58",
+    "title": "dasdas",
+    "content": "aasdasd",
+    "genre": "Fiction",
+    "author": "admin",
+    "comments": [
+      {
+        "id": "e1bda652-deb7-4917-9fb9-ac697c50981d",
+        "authorId": "671cfdaf-c961-445f-a217-1452afaeae58",
+        "post": "b70e4718-c347-4505-bc33-482672e1d6d5",
+        "author": "admin",
+        "content": "dasdas",
+        "upvotes": 0,
+        "downvotes": 0
+      }
+    ],
+    "upvotes": 0,
+    "downvotes": 0,
+    "views": 43
+  },
+  {
+    "id": "10a540d5-e7bc-4150-bb06-5300af6a2eeb",
+    "authorId": "671cfdaf-c961-445f-a217-1452afaeae58",
+    "title": "Node module",
+    "content": "product",
+    "genre": "Fiction",
+    "author": "adminss",
+    "comments": [],
+    "upvotes": 0,
+    "downvotes": 0,
+    "views": null
+  },
+  {
+    "id": "d424432e-f1f7-401c-9dc3-b633b0f52853",
+    "authorId": "671cfdaf-c961-445f-a217-1452afaeae58",
+    "title": "Json modules",
+    "content": "akshit's work",
+    "genre": "Poetry",
+    "author": "adminss",
+    "comments": [
+      {
+        "id": "9472427d-f355-46b4-bec5-4f2c0cb35765",
+        "authorId": "671cfdaf-c961-445f-a217-1452afaeae58",
+        "post": "d424432e-f1f7-401c-9dc3-b633b0f52853",
+        "author": "admin",
+        "content": "asdas",
+        "upvotes": 0,
+        "downvotes": 0
+      }
+    ],
+    "upvotes": 0,
+    "downvotes": 0,
+    "views": 200
+  },
+  {
+    "id": "a8cc69f3-3bb8-49d7-b36e-9006437b8d55",
+    "authorId": "671cfdaf-c961-445f-a217-1452afaeae58",
+    "title": "New post",
+    "content": "sadsd",
+    "genre": "Poetry",
+    "author": "admin",
+    "comments": [
+      {
+        "id": "454d0ff0-895d-4806-a5cb-e13be09c9cb5",
+        "authorId": "7d165c4a-decc-46c5-8714-3bc64611caaa",
+        "post": "a8cc69f3-3bb8-49d7-b36e-9006437b8d55",
+        "author": "test",
+        "content": "asdasd",
+        "upvotes": 0,
+        "downvotes": 0
+      },
+      {
+        "id": "8f531037-4f2f-41e0-a988-4857cab163ff",
+        "authorId": "7d165c4a-decc-46c5-8714-3bc64611caaa",
+        "post": "a8cc69f3-3bb8-49d7-b36e-9006437b8d55",
+        "author": "test",
+        "content": "dcdscs",
+        "upvotes": 0,
+        "downvotes": 0
+      },
+      {
+        "id": "7e75c930-cf29-4f1d-98b1-52ec1ecc56bf",
+        "authorId": "7d165c4a-decc-46c5-8714-3bc64611caaa",
+        "post": "a8cc69f3-3bb8-49d7-b36e-9006437b8d55",
+        "author": "test",
+        "content": "asdas",
+        "upvotes": 0,
+        "downvotes": 0
+      }
+    ],
+    "upvotes": [
+      "671cfdaf-c961-445f-a217-1452afaeae58"
+    ],
+    "downvotes": [],
+    "views": 57
+  }
+]

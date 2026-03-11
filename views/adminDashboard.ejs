@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('partials/head') %>
+    <title>Admin Dashboard</title>
+</head>
+<body>
+    <%- include('partials/navbar') %>
+    <div class="container mt-5">
+        <h1>Admin Dashboard</h1>
+        <h2>Manage Users</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Admin</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% users.forEach(user => { %>
+                <tr>
+                    <td><%= user.fullName %></td>
+                    <td><%= user.email %></td>
+                    <td><%= user.isAdmin ? "Yes" : "No" %></td>
+                    <td>
+                        <form action="/admin/manageUser" method="post" style="display: inline;">
+                            <input type="hidden" name="userId" value="<%= user._id %>">
+                            <button type="submit" name="action" value="delete" class="btn btn-danger">Delete</button>
+                        </form>
+                        <form action="/admin/manageUser" method="post" style="display: inline;">
+                            <input type="hidden" name="userId" value="<%= user._id %>">
+                            <input type="text" name="fullName" placeholder="Edit Name" value="<%= user.fullName %>">
+                            <input type="email" name="email" placeholder="Edit Email" value="<%= user.email %>">
+                            <select name="isAdmin">
+                                <option value="true" <%= user.isAdmin ? "selected" : "" %>>Yes</option>
+                                <option value="false" <%= !user.isAdmin ? "selected" : "" %>>No</option>
+                            </select>
+                            <button type="submit" name="action" value="edit" class="btn btn-primary">Edit</button>
+                        </form>
+                    </td>
+                </tr>
+                <% }) %>
+            </tbody>
+        </table>
+
+        <h2>Site Reports</h2>
+        <button class="btn btn-info" onclick="generateReports()">Generate Reports</button>
+        <div id="reports"></div>
+    </div>
+
+    <script>
+        async function generateReports() {
+            const response = await fetch("/admin/reports");
+            const data = await response.json();
+            document.getElementById("reports").innerHTML = `
+                <p>Total Users: ${data.userCount}</p>
+                <p>Total Posts: ${data.postCount}</p>
+                <p>Total Admins: ${data.adminCount}</p>
+            `;
+        }
+    </script>
+</body>
+</html>

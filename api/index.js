@@ -4,8 +4,16 @@
 const app = require("../app");
 const connectDB = require("../db");
 
-// Kick off MongoDB at cold start. db.js caches the connection promise,
-// and mongoose buffers queries until the connection resolves.
-connectDB().catch((err) => console.error("MongoDB connect error:", err));
-
-module.exports = app;
+// Vercel can invoke the function before a cold-start connection is ready.
+// Await it so auth requests never depend on Mongoose's query buffering.
+module.exports = async function handler(req, res) {
+	try {
+		await connectDB();
+		return app(req, res);
+	} catch (error) {
+		console.error("MongoDB connection error:", error);
+		return res.status(503).json({
+			message: "Database unavailable. Check the Vercel MONGO_URL and MongoDB Atlas network access settings."
+		});
+	}
+};

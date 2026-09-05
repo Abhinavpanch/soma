@@ -1,79 +1,45 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forgot Password - Soma</title>
-    <Style>
-        body {
-    background: linear-gradient(to right, #1f4037, #99f2c8);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
+<%- include('partials/layout-top', { pageTitle: 'Forgot password' }) %>
 
-.forgot-password-container {
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 300px;
-    text-align: center;
-}
+<main class="auth-stage">
+  <div class="auth-glass-card glass-shimmer animate-fade-up">
+    <a class="auth-brand" href="/">
+      <span class="brand-mark"></span>
+      <span>Soma</span>
+    </a>
 
-.input-group {
-    margin-bottom: 15px;
-    text-align: left;
-}
+    <h1 class="auth-title">Lost your place?</h1>
+    <p class="auth-sub">Enter your email and we will help you turn back the page.</p>
 
-label {
-    display: block;
-    margin-bottom: 5px;
-}
+    <div class="divider-line"></div>
 
-input {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
+    <% if (typeof error !== 'undefined' && error) { %>
+      <div class="error-message mb-3"><%= error %></div>
+    <% } %>
 
-button {
-    width: 100%;
-    padding: 10px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
+    <form id="forgotPasswordForm">
+      <div class="mb-4">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="glass-input" id="email" name="email" placeholder="reader@example.com" required autofocus />
+      </div>
+      <button class="btn btn-glass btn-glass-primary w-100" type="submit">Reset password</button>
+      <p id="infoMessage" class="info-message text-center mt-3 mb-0"></p>
+    </form>
 
-button:hover {
-    background-color: #45a049;
-}
+    <div class="divider-line"></div>
 
-.info-message {
-    margin-top: 20px;
-    color: #888;
-}
+    <p class="text-center mb-0 small text-soft">
+      Remembered it?
+      <a class="auth-link" href="/user/login">Back to sign in</a>
+    </p>
+  </div>
+</main>
 
-    </Style>
-</head>
-<body>
-    <div class="forgot-password-container">
-        <h1>Forgot Password</h1>
-        <form id="forgotPasswordForm">
-            <div class="input-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" required>
-            </div>
-            <button type="submit">Reset Password</button>
-            <p id="infoMessage" class="info-message"></p>
-        </form>
-    </div>
-</body>
-</html>
+<script>
+  document.getElementById('forgotPasswordForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    document.getElementById('infoMessage').textContent =
+      'If that email exists on our shelves, a reset link is on its way.';
+  });
+</script>
+
+<%- include('partials/layout-bottom') %>

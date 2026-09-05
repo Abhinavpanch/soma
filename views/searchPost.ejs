@@ -1,21 +1,44 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h2>Search Results for "{{ query }}"</h2>
-{% if results %}
-    <ul>
-    {% for post in results %}
-        <li><a href="/post/{{ post.id }}">{{ post.title }}</a></li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>No results found.</p>
-{% endif %}
+<%- include('partials/layout-top', { pageTitle: 'Search results' }) %>
 
-</body>
-</html>
+<main class="page-main">
+  <div class="container-xxl">
+    <section class="page-hero glass-shimmer mb-4 animate-fade-up">
+      <span class="eyebrow">Search the shelves</span>
+      <h1 class="page-title">Search results</h1>
+      <p class="lead mb-0">
+        <% if (typeof searchInput !== 'undefined' && searchInput) { %>
+          Matching <span class="text-accent fw-semibold">“<%= searchInput %>”</span>
+        <% } else { %>
+          Browse everything on the shelf.
+        <% } %>
+      </p>
+    </section>
+
+    <% if (typeof results !== 'undefined' && results.length > 0) { %>
+      <div class="row g-4 stagger-children">
+        <% results.forEach(post => { %>
+          <div class="col-12 col-md-6 col-xl-4 reveal">
+            <a class="post-tile-link" href="/posts/<%= post._id %>">
+              <article class="post-tile glass-shimmer">
+                <span class="chip mb-2 d-inline-flex"><%= post.genre %></span>
+                <h2 class="post-tile-title"><%= post.title %></h2>
+                <div class="post-tile-meta mb-1">
+                  <span class="text-accent">Author:</span> <%= post.author ? post.author : 'Unknown' %>
+                </div>
+                <p class="post-tile-preview"><%= post.content %></p>
+              </article>
+            </a>
+          </div>
+        <% }) %>
+      </div>
+    <% } else { %>
+      <div class="empty-state reveal">
+        <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" class="mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
+        <h3 class="h4 mb-1">No matches on the shelves</h3>
+        <p class="mb-0">Try a different title, phrase, or browse from <a class="auth-link" href="/">home</a>.</p>
+      </div>
+    <% } %>
+  </div>
+</main>
+
+<%- include('partials/layout-bottom') %>

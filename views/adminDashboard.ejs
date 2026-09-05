@@ -1,65 +1,144 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <%- include('partials/head') %>
-    <title>Admin Dashboard</title>
-</head>
-<body>
-    <%- include('partials/navbar') %>
-    <div class="container mt-5">
-        <h1>Admin Dashboard</h1>
-        <h2>Manage Users</h2>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Admin</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% users.forEach(user => { %>
-                <tr>
-                    <td><%= user.fullName %></td>
-                    <td><%= user.email %></td>
-                    <td><%= user.isAdmin ? "Yes" : "No" %></td>
-                    <td>
-                        <form action="/admin/manageUser" method="post" style="display: inline;">
-                            <input type="hidden" name="userId" value="<%= user._id %>">
-                            <button type="submit" name="action" value="delete" class="btn btn-danger">Delete</button>
-                        </form>
-                        <form action="/admin/manageUser" method="post" style="display: inline;">
-                            <input type="hidden" name="userId" value="<%= user._id %>">
-                            <input type="text" name="fullName" placeholder="Edit Name" value="<%= user.fullName %>">
-                            <input type="email" name="email" placeholder="Edit Email" value="<%= user.email %>">
-                            <select name="isAdmin">
-                                <option value="true" <%= user.isAdmin ? "selected" : "" %>>Yes</option>
-                                <option value="false" <%= !user.isAdmin ? "selected" : "" %>>No</option>
-                            </select>
-                            <button type="submit" name="action" value="edit" class="btn btn-primary">Edit</button>
-                        </form>
-                    </td>
-                </tr>
-                <% }) %>
-            </tbody>
-        </table>
+<%- include('partials/layout-top', { pageTitle: 'Admin dashboard' }) %>
 
-        <h2>Site Reports</h2>
-        <button class="btn btn-info" onclick="generateReports()">Generate Reports</button>
-        <div id="reports"></div>
+<main class="page-main">
+  <div class="container-xxl">
+    <section class="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-4 animate-fade-up">
+      <div>
+        <span class="eyebrow">Librarian console</span>
+        <h1 class="h2 fw-semibold mb-0">Admin dashboard</h1>
+      </div>
+      <button class="btn btn-glass btn-glass-primary" onclick="generateReports()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" /></svg>
+        Generate reports
+      </button>
+    </section>
+
+    <!-- Live stats -->
+    <div class="row g-3 mb-4 stagger-children">
+      <div class="col-6 col-md-4 col-xl-3">
+        <div class="stat-card">
+          <div class="stat-label">Readers</div>
+          <div class="stat-value" id="reportUserCount">–</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-xl-3">
+        <div class="stat-card">
+          <div class="stat-label">Stories</div>
+          <div class="stat-value" id="reportPostCount">–</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-xl-3">
+        <div class="stat-card">
+          <div class="stat-label">Librarians</div>
+          <div class="stat-value" id="reportAdminCount">–</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-xl-3">
+        <div class="stat-card">
+          <div class="stat-label">On the shelf</div>
+          <div class="stat-value" id="statPostCount"><%= (typeof posts !== 'undefined' && posts) ? posts.length : 0 %></div>
+        </div>
+      </div>
     </div>
 
-    <script>
-        async function generateReports() {
-            const response = await fetch("/admin/reports");
-            const data = await response.json();
-            document.getElementById("reports").innerHTML = `
-                <p>Total Users: ${data.userCount}</p>
-                <p>Total Posts: ${data.postCount}</p>
-                <p>Total Admins: ${data.adminCount}</p>
-            `;
-        }
-    </script>
-</body>
-</html>
+    <!-- Users -->
+    <section class="animate-fade-up">
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <h2 class="h4 fw-semibold mb-0">Manage readers</h2>
+      </div>
+
+      <div class="glass-table-wrap">
+        <div class="table-responsive">
+          <table class="table table-glass align-middle mb-0">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% (typeof users !== 'undefined' ? users : []).forEach(u => { %>
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center gap-2">
+                      <span class="avatar-circle" style="width:30px;height:30px;font-size:0.75rem"><%= (u.fullName || 'U').charAt(0).toUpperCase() %></span>
+                      <span class="fw-semibold"><%= u.fullName %></span>
+                    </div>
+                  </td>
+                  <td><%= u.email %></td>
+                  <td>
+                    <% if (u.isAdmin) { %>
+                      <span class="chip">Admin</span>
+                    <% } else { %>
+                      <span class="text-soft small">Reader</span>
+                    <% } %>
+                  </td>
+                  <td>
+                    <div class="d-flex flex-wrap gap-2">
+                      <form action="/admin/manageUser" method="post" class="m-0">
+                        <input type="hidden" name="userId" value="<%= u._id %>" />
+                        <button type="submit" name="action" value="delete" class="btn btn-glass btn-glass-danger btn-sm py-1 px-3">Delete</button>
+                      </form>
+                      <button class="btn btn-glass btn-glass-ghost btn-sm py-1 px-3" data-bs-toggle="collapse" data-bs-target="#editUser-<%= u._id %>">Edit</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="collapse" id="editUser-<%= u._id %>">
+                  <td colspan="4">
+                    <form action="/admin/manageUser" method="post" class="row g-2 align-items-end">
+                      <input type="hidden" name="userId" value="<%= u._id %>" />
+                      <div class="col-12 col-md-4">
+                        <label class="form-label small mb-1">Name</label>
+                        <input type="text" name="fullName" class="glass-input" value="<%= u.fullName %>" />
+                      </div>
+                      <div class="col-12 col-md-4">
+                        <label class="form-label small mb-1">Email</label>
+                        <input type="email" name="email" class="glass-input" value="<%= u.email %>" />
+                      </div>
+                      <div class="col-6 col-md-2">
+                        <label class="form-label small mb-1">Admin</label>
+                        <select name="isAdmin" class="glass-input">
+                          <option value="true" <%= u.isAdmin ? 'selected' : '' %>>Yes</option>
+                          <option value="false" <%= !u.isAdmin ? 'selected' : '' %>>No</option>
+                        </select>
+                      </div>
+                      <div class="col-6 col-md-2">
+                        <button type="submit" name="action" value="edit" class="btn btn-glass btn-glass-primary w-100">Save</button>
+                      </div>
+                    </form>
+                  </td>
+                </tr>
+              <% }) %>
+              <% if (typeof users === 'undefined' || users.length === 0) { %>
+                <tr><td colspan="4" class="text-soft">No readers registered yet.</td></tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<script>
+  async function generateReports() {
+    try {
+      const response = await fetch('/admin/reports');
+      const data = await response.json();
+      const u = document.getElementById('reportUserCount');
+      const p = document.getElementById('reportPostCount');
+      const a = document.getElementById('reportAdminCount');
+      if (u) u.textContent = data.userCount;
+      if (p) p.textContent = data.postCount;
+      if (a) a.textContent = data.adminCount;
+    } catch (error) {
+      console.error('Error generating reports:', error);
+    }
+  }
+  // Fill initial stats on load
+  document.addEventListener('DOMContentLoaded', generateReports);
+</script>
+
+<%- include('partials/layout-bottom') %>

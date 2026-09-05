@@ -1,130 +1,93 @@
-<nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom sticky-top">
-  <div class="container-xxl d-flex justify-content-around">
-    <div class="col-1">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="25"
-        height="25"
-        fill="currentColor"
-        class="bi bi-square-half text-black-50 justify-content-start"
-        viewBox="0 0 16 16"
+<nav class="navbar-glass navbar navbar-expand-lg">
+  <div class="container-xxl d-flex justify-content-between align-items-center gap-2">
+    <!-- Hamburger (mobile) -->
+    <div class="d-block d-lg-none">
+      <button
+        type="button"
+        class="btn btn-glass btn-glass-ghost border-0 px-2 py-2"
         data-bs-toggle="offcanvas"
         data-bs-target="#offcanvasWithBothOptions"
         aria-controls="offcanvasWithBothOptions"
-        style="cursor: pointer"
+        aria-label="Open sidebar"
       >
-        <path
-          fill-rule="evenodd"
-          d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"
-        />
-      </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
     </div>
-    <div class="col-2">
-      <a class="navbar-brand fw-bold text-secondary" href="/">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          fill="currentColor"
-          class="bi bi-vector-pen me-2 text-secondary"
-          viewBox="0 0 16 16"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M10.646.646a.5.5 0 0 1 .708 0l4 4a.5.5 0 0 1 0 .708l-1.902 1.902-.829 3.313a1.5 1.5 0 0 1-1.024 1.073L1.254 14.746 4.358 4.4A1.5 1.5 0 0 1 5.43 3.377l3.313-.828zm-1.8 2.908-3.173.793a.5.5 0 0 0-.358.342l-2.57 8.565 8.567-2.57a.5.5 0 0 0 .34-.357l.794-3.174-3.6-3.6z"
-          />
-          <path
-            fill-rule="evenodd"
-            d="M2.832 13.228 8 9a1 1 0 1 0-1-1l-4.228 5.168-.026.086z"
-          /></svg>Soma</a
-      >
-    </div>
-    <div class="col-6">
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarSupportedContent"
-      aria-controls="navbarSupportedContent"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
-      <div class="container"></div>
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div
-      class="collapse navbar-collapse justify-content-between"
-      id="navbarSupportedContent"
-    >
-      <form action="/posts/search" class="d-flex" role="search" method="post">
+
+    <!-- Brand -->
+    <a class="navbar-brand d-flex align-items-center gap-2 me-0 me-lg-3" href="/">
+      <span class="brand-mark d-inline-block" style="width:15px;height:15px;border-radius:4px;background:linear-gradient(135deg,#e5bd5e,#b07f1d);box-shadow:0 0 0 3px rgba(176,127,29,0.18);transform:rotate(8deg)"></span>
+      <span class="d-none d-sm-inline fs-5">Soma</span>
+      <span class="d-inline d-sm-none fs-5">S</span>
+    </a>
+
+    <!-- Search (desktop, center) -->
+    <div class="col-lg-6 d-none d-lg-block mx-lg-3">
+      <form action="/posts/search" class="d-flex gap-2" role="search" method="post">
         <input
-          class="form-control me-2"
+          class="form-control form-search"
           type="search"
           id="searchInput"
           name="searchInput"
-          placeholder="Search"
+          placeholder="Search the shelves…"
           aria-label="Search"
         />
-        <button class="btn btn-outline-success" type="submit">Search</button>
+        <button class="btn btn-glass btn-glass-primary flex-shrink-0" type="submit">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 109.803 9.803l5.197 5.197m0 0 1.06-1.06" />
+          </svg>
+          <span class="d-none d-xl-inline">Search</span>
+        </button>
       </form>
     </div>
-  </div>
 
-    <ul class="navbar-nav me-auto mb-2 mb-lg-0 mt-3 d-block d-lg-none">
-      <li class="nav-item">
-        <a
-          class="nav-link"
-          aria-current="page"
-          onclick="window.location.href='/user/signup'"
-          >Signup</a
-        >
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" onclick="window.location.href='/user/login'"
-          >Login</a
-        >
-      </li>
-    </ul>
-    <div class="ms-4 d-none d-lg-block">
-      <% if (!user) { %>
-      <button
-        class="btn btn-outline-primary"
-        type="button"
-        onclick="window.location.href='/user/signup'"
-      >
-        Signup
-      </button>
-      <button
-        class="btn btn-outline-primary"
-        type="button"
-        onclick="window.location.href='/user/login'"
-      >
-        Login
-      </button>
-      <% } %> <% if (user) { %>
-
-      <button
-        class="btn btn-outline-secondary"
-        type="button"
-        onclick="window.location.href='/posts/add'"
-      >
-        Add Post
-      </button>
-      <button
-      class="btn btn-outline-secondary"
-      type="button"
-      onclick="window.location.href='/user/posts'"
-    >
-      My Posts
-    </button>
-      <form
-        id="logoutForm"
-        action="/user/logout"
-        method="POST"
-        style="display: inline"
-      >
-        <button class="btn btn-danger" type="submit">Logout</button>
-      </form>
+    <!-- Actions (right) -->
+    <div class="d-flex justify-content-end align-items-center gap-2">
+      <% if (typeof user === 'undefined' || !user) { %>
+        <a class="btn btn-glass btn-glass-ghost d-none d-sm-inline-flex" href="/user/login">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-7.5A2.25 2.25 0 003.75 5.25v13.5A2.25 2.25 0 006 21h7.5a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" /></svg>
+          Login
+        </a>
+        <a class="btn btn-glass btn-glass-primary" href="/user/signup">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+          <span class="d-none d-sm-inline">Join the shelf</span>
+          <span class="d-inline d-sm-none">Sign up</span>
+        </a>
+      <% } else { %>
+        <a class="btn btn-glass btn-glass-primary" href="/posts/add">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" /></svg>
+          <span class="d-none d-sm-inline">Write a post</span>
+          <span class="d-inline d-sm-none">Write</span>
+        </a>
+        <div class="dropdown d-none d-lg-block">
+          <a href="#" class="profile-pill" data-bs-toggle="dropdown" aria-expanded="false">
+            <span class="avatar-circle" style="width:32px;height:32px;font-size:0.8rem">
+              <%= (user.fullName || 'S').charAt(0).toUpperCase() %>
+            </span>
+            <span class="d-none d-xl-inline"><%= user.fullName || 'Reader' %></span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end shadow-glass text-sm">
+            <li><a class="dropdown-item" href="/user/profile">Profile</a></li>
+            <li><a class="dropdown-item" href="/user/posts">My Posts</a></li>
+            <% if (user.isAdmin) { %>
+              <li><a class="dropdown-item" href="/admin/dashboard">Admin dashboard</a></li>
+            <% } %>
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+              <form action="/user/logout" method="POST" class="m-0">
+                <button class="dropdown-item w-100 text-start text-danger" type="submit">Sign out</button>
+              </form>
+            </li>
+          </ul>
+        </div>
+        <form id="logoutForm" class="d-lg-none" action="/user/logout" method="POST" style="display:inline">
+          <button class="btn btn-glass btn-glass-ghost" type="submit">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-7.5A2.25 2.25 0 003.75 5.25v13.5A2.25 2.25 0 006 21h7.5a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" /></svg>
+          </button>
+        </form>
       <% } %>
     </div>
   </div>

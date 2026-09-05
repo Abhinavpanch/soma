@@ -1,13 +1,12 @@
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
 
-const JWT_SECRET = process.env.SECRET_KEY || "chintu";
+const JWT_SECRET = process.env.JWT_SECRET || process.env.SECRET_KEY || "Abhi";
 
 const authenticateJWT = (req, res, next) => {
     const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
 
     if (!token) {
-        console.log("No token provided");
         req.user = null;
         return next();
     }
@@ -15,11 +14,9 @@ const authenticateJWT = (req, res, next) => {
     jwt.verify(token, JWT_SECRET, (err, user) => {
         if (err) {
             console.error("JWT verification failed:", err.message);
+            // Guest mode — expired or invalid cookies shouldn't break public pages
             req.user = null;
-            if (err.name === "TokenExpiredError") {
-                return res.status(401).json({ message: "Session expired. Please log in again." });
-            }
-            return res.status(403).json({ message: "Invalid token" });
+            return next();
         }
         req.user = user;
         next();

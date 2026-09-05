@@ -1,2 +1,67 @@
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
-<script src="./sidebar.js"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+  crossorigin="anonymous"
+></script>
+<script>
+  (function () {
+    'use strict';
+
+    // 1) Sidebar stagger reveal when the offcanvas opens
+    var revealSidebar = function () {
+      document.querySelectorAll('.offcanvas-glass .sidebar-reveal').forEach(function (el) {
+        var items = el.querySelectorAll(':scope > li, :scope > a');
+        items.forEach(function (item, i) {
+          item.style.opacity = '0';
+          item.style.transform = 'translateY(10px)';
+          item.style.animation = 'none';
+          item.getBoundingClientRect();
+          item.style.animation = 'fadeSlideIn 0.45s cubic-bezier(0.22,1,0.36,1) forwards';
+          item.style.animationDelay = (i * 0.06) + 's';
+        });
+      });
+    };
+
+    var sidebar = document.getElementById('offcanvasWithBothOptions');
+    if (sidebar) {
+      sidebar.addEventListener('show.bs.offcanvas', revealSidebar);
+    }
+
+    // 2) Reveal-on-scroll for .reveal elements (staggered fade-up)
+    var revealEls = document.querySelectorAll('.reveal');
+    if (revealEls.length && 'IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries, observer) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          var el = entry.target;
+          var delay = parseFloat(el.dataset.delay || 0);
+          el.style.opacity = '0';
+          el.style.animation = 'none';
+          el.getBoundingClientRect();
+          el.style.animation = 'fadeUp 0.7s cubic-bezier(0.22,1,0.36,1) forwards';
+          el.style.animationDelay = delay + 's';
+          observer.unobserve(el);
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+      revealEls.forEach(function (el) { io.observe(el); });
+    } else {
+      revealEls.forEach(function (el) { el.classList.add('animate-fade-up'); });
+    }
+
+    // 3) Soft glass lift on the navbar while scrolling
+    var nav = document.querySelector('.navbar-glass');
+    if (nav) {
+      var ticking = false;
+      window.addEventListener('scroll', function () {
+        if (!ticking) {
+          window.requestAnimationFrame(function () {
+            var y = window.scrollY;
+            nav.classList.toggle('navbar-scrolled', y > 12);
+            ticking = false;
+          });
+          ticking = true;
+        }
+      });
+    }
+  })();
+</script>

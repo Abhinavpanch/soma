@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const Post = require("../models/postFunctions.model");
 
-const SECRET_KEY = process.env.SECRET_KEY || "chintu";
+const SECRET_KEY = process.env.JWT_SECRET || process.env.SECRET_KEY || "Abhi";
 
 function handleUserSignup(req, res) {
     return res.render("signup");

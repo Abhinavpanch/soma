@@ -1,9 +1,11 @@
 const Post = require('../models/postFunctions.model');
 const User = require("../models/user.model");
 const Comment = require("../models/comment.model");
+const connectDB = require("../db");
 
 async function handleHomePage(req, res) {
     try {
+        await connectDB();
         const posts = await Post.find().sort({ createdAt: -1 }); // Fetch posts in reverse chronological order
         const user = req.user || null;
 
@@ -31,7 +33,7 @@ async function getMyPost(req, res) {
 }
 
 async function getPostPage(req, res) {
-    return res.render("addPost");
+    return res.render("addPost", { user: req.user });
 }
 
 async function addPost(req, res) {
@@ -40,6 +42,7 @@ async function addPost(req, res) {
     }
 
     try {
+        await connectDB();
         const { title, content, genre } = req.body;
 
         const post = await Post.create({

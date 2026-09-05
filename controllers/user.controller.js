@@ -34,7 +34,7 @@ async function createUser(req, res) {
             password: hashedPassword,
         });
 
-        return res.redirect("/user/login");
+        return res.redirect(303, "/user/login");
     } catch (error) {
         console.error("Error creating user:", error);
         return res.status(500).json({ message: "Internal Server Error" });
@@ -57,7 +57,7 @@ async function verifyUser(req, res) {
         );
 
         res.cookie("token", token, { httpOnly: true, secure: process.env.NODE_ENV === "production" });
-        return res.redirect("/");
+        return res.redirect(303, "/");
     } catch (error) {
         console.error("Error during login:", error);
 

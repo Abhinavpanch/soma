@@ -16,7 +16,7 @@ function handleUserLogin(req, res) {
 
 function handleUserLogout(req, res) {
     res.clearCookie("token");
-    return res.redirect("/user/login");
+    return res.redirect(303, "/user/login");
 }
 
 async function createUser(req, res) {

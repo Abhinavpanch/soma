@@ -63,6 +63,7 @@ async function addPost(req, res) {
 
 async function showPost(req, res) {
     try {
+        await connectDB();
         const postId = req.params.id;
 
         const post = await Post.findById(postId).populate('comments'); // Populate comments
@@ -108,6 +109,7 @@ async function deletePost(req, res) {
 
 async function addComment(req, res) {
     try {
+        await connectDB();
         const postId = req.params.id;
         const { content } = req.body;
         const post = await Post.findById(postId);
@@ -124,7 +126,7 @@ async function addComment(req, res) {
 
         await Post.updateOne({ _id: postId }, { $push: { comments: comment._id } });
 
-        res.redirect(`/posts/${postId}`);
+        return res.redirect(303, `/posts/${postId}`);
     } catch (error) {
         console.error('Error adding comment:', error);
         return res.status(500).json({ message: 'Internal Server Error' });
@@ -133,6 +135,7 @@ async function addComment(req, res) {
 
 async function deleteComment(req, res) {
     try {
+        await connectDB();
         const { postId, commentId } = req.params;
 
         const post = await Post.findById(postId);
@@ -186,6 +189,7 @@ async function searchPost(req, res) {
 
 async function upvotePost(req, res) {
     try {
+        await connectDB();
         const postId = req.params.id;
         const userId = req.user.id;
 
@@ -194,7 +198,7 @@ async function upvotePost(req, res) {
             return res.status(404).json({ message: 'Post not found' });
         }
 
-        const hasUpvoted = post.upvotes.includes(userId);
+        const hasUpvoted = post.upvotes.some((id) => String(id) === String(userId));
 
         if (hasUpvoted) {
             await Post.updateOne({ _id: postId }, { $pull: { upvotes: userId } });
@@ -202,7 +206,7 @@ async function upvotePost(req, res) {
             await Post.updateOne({ _id: postId }, { $addToSet: { upvotes: userId } });
         }
 
-        res.status(200).redirect(`/posts/${postId}`);
+        return res.redirect(303, `/posts/${postId}`);
     } catch (error) {
         console.error('Error upvoting post:', error);
         return res.status(500).json({ message: 'Internal Server Error' });
@@ -211,6 +215,7 @@ async function upvotePost(req, res) {
 
 async function downvotePost(req, res) {
     try {
+        await connectDB();
         const postId = req.params.id;
         const userId = req.user.id;
 
@@ -219,7 +224,7 @@ async function downvotePost(req, res) {
             return res.status(404).json({ message: 'Post not found' });
         }
 
-        const hasDownvoted = post.downvotes.includes(userId);
+        const hasDownvoted = post.downvotes.some((id) => String(id) === String(userId));
 
         if (hasDownvoted) {
             await Post.updateOne({ _id: postId }, { $pull: { downvotes: userId } });
@@ -227,7 +232,7 @@ async function downvotePost(req, res) {
             await Post.updateOne({ _id: postId }, { $addToSet: { downvotes: userId } });
         }
 
-        res.status(200).redirect(`/posts/${postId}`);
+        return res.redirect(303, `/posts/${postId}`);
     } catch (error) {
         console.error('Error downvoting post:', error);
         return res.status(500).json({ message: 'Internal Server Error' });

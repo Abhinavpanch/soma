@@ -14,7 +14,9 @@ console.log(`[db] MONGO_URL ${raw ? 'set' : 'NOT SET'}: ${masked}`);
 let cachedDbPromise = null;
 
 async function connectDB() {
-  if (cachedDbPromise) return cachedDbPromise;
+  if (mongoose.connection.readyState === 1) return mongoose.connection;
+  if (cachedDbPromise && mongoose.connection.readyState === 2) return cachedDbPromise;
+  cachedDbPromise = null;
 
   if (!MONGO_URL) {
     throw new Error('MONGO_URL is not configured for the deployed application');

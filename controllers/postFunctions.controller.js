@@ -10,7 +10,13 @@ async function handleHomePage(req, res) {
         return res.render("home", { posts, message: "Welcome to Soma", user });
     } catch (error) {
         console.error("Error fetching posts:", error);
-        return res.redirect("/user/login");
+        // Keep the public home page available when the posts database is temporarily unavailable.
+        return res.render("home", {
+            posts: [],
+            message: "Welcome to Soma",
+            user: req.user || null,
+            databaseUnavailable: true,
+        });
     }
 }
 

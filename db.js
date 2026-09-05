@@ -16,9 +16,9 @@ async function connectDB() {
   if (cachedDb) return cachedDb;
 
   const opts = {
-    serverSelectionTimeoutMS: 10000,
-    connectTimeoutMS: 10000,
-    socketTimeoutMS: 45000,
+    serverSelectionTimeoutMS: 30000,
+    connectTimeoutMS: 30000,
+    socketTimeoutMS: 90000,
   };
 
   try {

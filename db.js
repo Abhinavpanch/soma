@@ -4,8 +4,9 @@ const raw = process.env.MONGO_URL;
 const MONGO_URL = raw || 'mongodb://localhost:27017/soma';
 
 // Mask the password for safe logging (mongodb+srv://user:pass@host/...)
+// Replace only the password between : and @, keeps the rest intact.
 const masked = raw
-  ? raw.replace(/^(mongodb(\+srv)?:\/\/[^:]+):[^@]+(@.+)$/, '$1:****$2')
+  ? raw.replace(/(:\/\/[^:]+:)[^@]+(@)/, '$1****$2')
   : 'NOT SET';
 console.log(`[db] MONGO_URL ${raw ? 'set' : 'NOT SET'}: ${masked}`);
 

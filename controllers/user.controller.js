@@ -60,7 +60,21 @@ async function verifyUser(req, res) {
         return res.redirect("/");
     } catch (error) {
         console.error("Error during login:", error);
-        return res.status(500).json({ message: "Internal Server Error" });
+
+        // If the DB itself is unreachable, tell the frontend it is a
+        // connection issue rather than a generic "Internal Server Error",
+        // while still logging the full error in Vercel.
+        const isConnectionFailure =
+            error &&
+            (String(error).includes("CONNECTION_HARD") ||
+             String(error).includes("MongooseServerSelectionError") ||
+             String(error).includes("connect error"));
+
+        return res.status(503).json({
+            message: isConnectionFailure
+                ? "Service temporarily unavailable — the database is not reachable right now. Please try again in a moment."
+                : "Internal Server Error"
+        });
     }
 }
 

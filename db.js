@@ -26,7 +26,13 @@ async function connectDB() {
     console.log('[db] MongoDB connected');
     return conn;
   } catch (err) {
+    // Surface the real driver-level reason so the next log line tells us
+    // whether it is Auth, Network (Atlas IP allowlist), DNS, or timeout.
+    const driverReason =
+      err && err.reason ? err.reason : err && err.message ? err.message : String(err);
+
     console.error('[db] MongoDB connection FAILED:', err.message);
+    console.error('[db] Driver reason:', driverReason);
     console.error('[db] Full URI (check Vercel env vars):', masked);
     throw err;
   }

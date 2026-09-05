@@ -2,6 +2,7 @@ const User = require("../models/user.model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const Post = require("../models/postFunctions.model");
+const connectDB = require("../db");
 
 const SECRET_KEY = process.env.JWT_SECRET || process.env.SECRET_KEY || "Abhi";
 
@@ -89,6 +90,7 @@ async function showUserPost(req, res) {
             return res.status(401).json({ message: "Unauthorized: User not logged in" });
         }
 
+        await connectDB();
         const posts = await Post.find({ authorId: req.user.id });
         res.render("myPosts", { posts, user: req.user });
     } catch (error) {

@@ -24,6 +24,7 @@ async function handleHomePage(req, res) {
 
 async function getMyPost(req, res) {
     try {
+        await connectDB();
         const posts = await Post.find({ authorId: req.user.id }).sort({ createdAt: -1 });
         return res.render("home", { posts, message: "Your Posts", user: req.user });
     } catch (error) {
@@ -88,18 +89,16 @@ async function incrementViews(postId) {
 
 async function deletePost(req, res) {
     try {
+        await connectDB();
         const postId = req.params.id;
 
-        const post = await Post.findById(postId);
-        if (!post) {
-            return res.status(404).json({ message: "Post not found" });
+        const result = await Post.deleteOne({ _id: postId, authorId: req.user.id });
+        if (result.deletedCount === 0) {
+            const post = await Post.exists({ _id: postId });
+            return res.status(post ? 403 : 404).json({
+                message: post ? "Unauthorized to delete this post" : "Post not found",
+            });
         }
-
-        if (post.authorId.toString() !== req.user.id) {
-            return res.status(403).json({ message: "Unauthorized to delete this post" });
-        }
-
-        await Post.deleteOne({ _id: postId });
         res.status(200).json({ message: "Post deleted successfully" });
     } catch (error) {
         console.error("Error deleting post:", error);

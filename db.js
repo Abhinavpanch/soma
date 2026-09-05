@@ -1,5 +1,9 @@
 const mongoose = require('mongoose');
 
+// Let route handlers receive the real connection error instead of waiting for
+// Mongoose's operation buffer when Atlas is unavailable.
+mongoose.set('bufferCommands', false);
+
 const raw = process.env.MONGO_URL;
 const isProduction = process.env.NODE_ENV === 'production' || process.env.VERCEL === '1';
 const MONGO_URL = raw || (isProduction ? null : 'mongodb://localhost:27017/soma');

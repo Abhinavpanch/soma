@@ -50,7 +50,7 @@ async function addPost(req, res) {
             authorId: req.user.id,
         });
 
-        return res.redirect('/');
+        return res.redirect(303, '/');
     } catch (error) {
         console.error('Error Creating Post:', error);
         return res.status(500).send('Server error');
